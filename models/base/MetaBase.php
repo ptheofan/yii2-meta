@@ -18,6 +18,8 @@ use Yii;
  * @property integer $sitemap
  * @property string $sitemap_change_freq
  * @property string $sitemap_priority
+ * @property string $created_at
+ * @property string $updated_at
  */
 class MetaBase extends \yii\db\ActiveRecord
 {
@@ -35,8 +37,10 @@ class MetaBase extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['route', 'created_at', 'updated_at'], 'required'],
             [['params', 'robots_index', 'robots_follow', 'meta_keywords', 'meta_description'], 'string'],
             [['sitemap'], 'integer'],
+            [['created_at', 'updated_at'], 'safe'],
             [['route', 'meta_title'], 'string', 'max' => 255],
             [['sitemap_change_freq'], 'string', 'max' => 20],
             [['sitemap_priority'], 'string', 'max' => 4]
@@ -60,6 +64,8 @@ class MetaBase extends \yii\db\ActiveRecord
             'sitemap' => 'Sitemap',
             'sitemap_change_freq' => 'Sitemap Change Freq',
             'sitemap_priority' => 'Sitemap Priority',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
         ];
     }
 }
