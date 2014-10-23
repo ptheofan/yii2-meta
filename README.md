@@ -1,6 +1,9 @@
 Web Page Metadata
 =================
-DB based web page meta data for SEO performance
+DB based web page metadata for SEO performance and less interuptive development.
+
+(Under Development, 1st working version expected soon)
+
 
 Installation
 ------------
