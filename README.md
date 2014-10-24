@@ -49,9 +49,9 @@ It will automatically identify and set the canonical, the og:url. The reset depe
 the argument used and the defaults as identified in your component config.
 
 You can optionally override data by specifying them in a parameter array
-```
-Yii::$app->meta->setMeta(['title' => 'My cool override']);
 ```php
+Yii::$app->meta->setMeta(['title' => 'My cool override']);
+```
 
 or you can use defaults to be used throughout the site in the component config
 ```php
