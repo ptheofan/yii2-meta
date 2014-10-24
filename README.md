@@ -2,6 +2,9 @@ Web Page Metadata
 =================
 DB based web page metadata for SEO performance annoying free development.
 
+What's next
+-----------
+Take into account the route named parameters
 
 Installation
 ------------
