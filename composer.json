@@ -1,6 +1,6 @@
 {
     "name": "ptheofan/yii2-meta",
-    "description": "DB based web page meta data for SEO performance",
+    "description": "DB based web page meta data for SEO performance and painless development",
     "type": "yii2-extension",
     "keywords": ["yii2","extension","page metadata"],
     "license": "MIT",
