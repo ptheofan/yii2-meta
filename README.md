@@ -1,8 +1,6 @@
 Web Page Metadata
 =================
-DB based web page metadata for SEO performance and less interuptive development.
-
-(Under Development, 1st working version expected soon)
+DB based web page metadata for SEO performance annoying free development.
 
 
 Installation
@@ -28,4 +26,42 @@ to the require section of your `composer.json` file.
 Usage
 -----
 
-todo
+Basic Usage
+In your components configuration add the following
+```php
+'meta' => [
+    'class' => 'ptheofan\meta\Meta',
+]
+```
+
+run the migration by running
+```
+./yii migrate --migrationPath="@vendor/ptheofan/yii2-meta/migrations"
+```
+
+In your code, if you want to automatically set the metadata for a page call
+```php
+Yii::$app->meta->setMeta();
+```
+This will automatically load the correct row from the database using the currently running
+route (module/controller/action or controller/action).
+It will automatically identify and set the canonical, the og:url. The reset depend on the database entry,
+the argument used and the defaults as identified in your component config.
+
+You can optionally override data by specifying them in a parameter array
+```
+Yii::$app->meta->setMeta(['title' => 'My cool override']);
+```php
+
+or you can use defaults to be used throughout the site in the component config
+```php
+'meta' => [
+    'class' => 'ptheofan\meta\Meta',
+    'defaults' => [
+        'og:type' => 'website',
+        'author' => 'My Cool Company',
+    ],
+]
+```
+
+The defaults will always override any values passed in through parameter or through the database.
