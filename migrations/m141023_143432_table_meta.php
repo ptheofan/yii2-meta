@@ -15,6 +15,7 @@ class m141023_143432_table_meta extends Migration
         /* MYSQL */
         $this->createTable('{{%meta}}', [
             'id_meta' => 'INT(11) UNSIGNED NOT NULL AUTO_INCREMENT',
+            'hash' => 'VARCHAR(255) NOT NULL',
             'route' => 'VARCHAR(255) NOT NULL',
             'params' => 'BLOB NULL',
             'robots_index' => 'ENUM(\'INDEX\',\'NOINDEX\') NULL',
@@ -30,6 +31,8 @@ class m141023_143432_table_meta extends Migration
             'updated_at' => Schema::TYPE_DATETIME . ' NOT NULL',
             0 => 'PRIMARY KEY (`id_meta`)'
         ], $tableOptions);
+
+        $this->createIndex('hash', '{{%meta}}', 'hash', true);
     }
 
     public function down()

@@ -8,13 +8,15 @@ use Yii;
  * This is the model class for table "meta".
  *
  * @property integer $id_meta
+ * @property string $hash
  * @property string $route
  * @property resource $params
  * @property string $robots_index
  * @property string $robots_follow
- * @property string $meta_title
- * @property string $meta_keywords
- * @property string $meta_description
+ * @property string $author
+ * @property string $title
+ * @property string $keywords
+ * @property string $description
  * @property integer $sitemap
  * @property string $sitemap_change_freq
  * @property string $sitemap_priority
@@ -37,13 +39,14 @@ class MetaBase extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['route', 'created_at', 'updated_at'], 'required'],
-            [['params', 'robots_index', 'robots_follow', 'meta_keywords', 'meta_description'], 'string'],
+            [['hash', 'route', 'created_at', 'updated_at'], 'required'],
+            [['params', 'robots_index', 'robots_follow', 'keywords', 'description'], 'string'],
             [['sitemap'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['route', 'meta_title'], 'string', 'max' => 255],
+            [['hash', 'route', 'author', 'title'], 'string', 'max' => 255],
             [['sitemap_change_freq'], 'string', 'max' => 20],
-            [['sitemap_priority'], 'string', 'max' => 4]
+            [['sitemap_priority'], 'string', 'max' => 4],
+            [['hash'], 'unique']
         ];
     }
 
@@ -54,13 +57,15 @@ class MetaBase extends \yii\db\ActiveRecord
     {
         return [
             'id_meta' => 'Id Meta',
+            'hash' => 'Hash',
             'route' => 'Route',
             'params' => 'Params',
             'robots_index' => 'Robots Index',
             'robots_follow' => 'Robots Follow',
-            'meta_title' => 'Meta Title',
-            'meta_keywords' => 'Meta Keywords',
-            'meta_description' => 'Meta Description',
+            'author' => 'Author',
+            'title' => 'Title',
+            'keywords' => 'Keywords',
+            'description' => 'Description',
             'sitemap' => 'Sitemap',
             'sitemap_change_freq' => 'Sitemap Change Freq',
             'sitemap_priority' => 'Sitemap Priority',
