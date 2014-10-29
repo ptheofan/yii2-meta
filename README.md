@@ -4,7 +4,8 @@ DB based web page metadata for SEO performance annoying free development.
 
 What's next
 -----------
-Take into account the route named parameters
+Take into account the route named parameters, done<br>
+Enable regex based acceptance criteria for the named parameters
 
 Installation
 ------------
