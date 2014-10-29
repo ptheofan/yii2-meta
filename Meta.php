@@ -10,6 +10,7 @@ namespace ptheofan\meta;
 
 use yii;
 use yii\base\Component;
+use yii\helpers\Json;
 
 class Meta extends Component
 {
@@ -48,11 +49,17 @@ class Meta extends Component
     /**
      * @var string
      */
-    private $activeRoute;
+    private $activeRoute = null;
 
-    public function init()
+    /**
+     * @param $route
+     * @param array $params
+     * @return string
+     */
+    protected function createRouteIndexKey($route, array $params = [])
     {
-        $this->setActiveRoute(Yii::$app->controller->getRoute());
+        array_unshift($params, $route);
+        return Json::encode($params);
     }
 
     /**
@@ -65,25 +72,43 @@ class Meta extends Component
         if ($routes)
             return $routes;
 
-        /** @var /yii/ $request */
-        $request = Yii::$app->request;
+        /** @var models\Meta[] $models */
         $models = models\Meta::find()->all(Yii::$app->{$this->db});
         $routes = [];
-        foreach($models as $model)
-            $routes[trim($model->route, '/')] = $model->toArray([
+        foreach($models as $model) {
+            $key = $this->createRouteIndexKey($model->route, $model->params);
+            $routes[$key] = $model->toArray([
                 'robots_index', 'robots_follow', 'title', 'keywords', 'description'
             ]);
+        }
 
         $cache->set($this->componentId . '|routes', $routes, $this->cacheDuration);
         return $routes;
     }
 
     /**
-     * @param string $route
+     * @param array $route
+     * @return array
      */
-    public function setActiveRoute($route)
+    public function getMeta(array $route)
     {
-        $this->activeRoute = $route;
+        $routes = $this->getRoutes();
+        $route = Json::encode($route);
+
+        // Uncomment the next line to debug routes vs activeRoute
+        // yii\helpers\VarDumper::dump([$routes, $route], 10);die;
+
+        return isset($routes[$route]) ? $routes[$route] : [];
+    }
+
+    /**
+     * @param $route
+     * @param array $params
+     */
+    public function setActiveRoute($route, array $params = [])
+    {
+        array_unshift($params, trim($route, '/'));
+        $this->activeRoute = $params;
     }
 
     /**
@@ -91,6 +116,11 @@ class Meta extends Component
      */
     public function getActiveRoute()
     {
+        if ($this->activeRoute === null) {
+            $route = Yii::$app->controller->getRoute();
+            $params = Yii::$app->controller->actionParams;
+            $this->setActiveRoute($route, $params);
+        }
         return $this->activeRoute;
     }
 
@@ -186,12 +216,13 @@ class Meta extends Component
         Yii::$app->view->registerMetaTag(['name' => 'og:url', 'content' => $url], 'og:url');
     }
 
+    /**
+     * @param array $metadata
+     */
     public function setMeta($metadata = [])
     {
-        $routes = $this->getRoutes();
         // Merge route meta with passed parameter meta
-        if(isset($routes[$this->getActiveRoute()]))
-            $metadata = array_merge($routes[$this->getActiveRoute()], $metadata);
+        $metadata = array_merge($this->getMeta($this->getActiveRoute()), $metadata);
 
         // Override meta with the defaults via merge
         $metadata = array_merge($metadata, $this->defaults);
