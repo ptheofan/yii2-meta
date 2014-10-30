@@ -78,7 +78,7 @@ class Meta extends Component
         foreach($models as $model) {
             $key = $this->createRouteIndexKey($model->route, $model->params);
             $routes[$key] = $model->toArray([
-                'robots_index', 'robots_follow', 'title', 'keywords', 'description'
+                'id_meta', 'robots_index', 'robots_follow', 'title', 'keywords', 'description'
             ]);
         }
 
@@ -88,9 +88,9 @@ class Meta extends Component
 
     /**
      * @param array $route
-     * @return array
+     * @return array|null
      */
-    public function getMeta(array $route)
+    public function getRouteData(array $route)
     {
         $routes = $this->getRoutes();
         $route = Json::encode($route);
@@ -98,7 +98,24 @@ class Meta extends Component
         // Uncomment the next line to debug routes vs activeRoute
         // yii\helpers\VarDumper::dump([$routes, $route], 10);die;
 
-        return isset($routes[$route]) ? $routes[$route] : [];
+        return isset($routes[$route]) ? $routes[$route] : null;
+    }
+
+    /**
+     * @param array $route
+     * @return array
+     */
+    public function getMeta(array $route)
+    {
+        $rVal = $this->getRouteData($route);
+
+        if (!$rVal)
+            return [];
+
+        if (isset($rVal['id_meta']))
+            unset($rVal['id_meta']);
+
+        return $rVal;
     }
 
     /**
@@ -122,6 +139,15 @@ class Meta extends Component
             $this->setActiveRoute($route, $params);
         }
         return $this->activeRoute;
+    }
+
+    /**
+     * @return int|false
+     */
+    public function getActiveRouteId()
+    {
+        $route = $this->getRouteData($this->getActiveRoute());
+        return $route && isset($route['id_meta']) ? $route['id_meta'] : false;
     }
 
     /**
